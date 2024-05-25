@@ -7,7 +7,7 @@
 </head>
 <body>
     <h3>edit your listing</h3>
-    <form method="post"  action="/listings/<%= listing._id %> ?_method=PUT">
+    <form method="post" action="/listings/<%=listing._id %>?_method=PUT">
      <input type="text" name="listing[title]" value="<%= listing.title %>">
      <br><br>
      <textarea  name="listing[description]"><%= listing.description %> </textarea>
