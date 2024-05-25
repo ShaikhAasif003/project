@@ -3,11 +3,13 @@ const app = express();
 const mongoose = require("mongoose")
 const Listing = require("./models/listing.js") 
 const path = require("path")
+const methodOverride = require('method-override');
 
 
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 app.use(express.urlencoded({extended:true}))
+app.use(methodOverride('_method'));
 
 main().then(() => {
     console.log("connected to DB")
@@ -51,7 +53,14 @@ app.post("/listing", async (req,res) => {
 app.get("/listing/:id/edit", async (req,res) => {
     let {id} = req.params;
     const listing = await  Listing.findById(id);
-    res.render("/listings/edit.ejs",{ listing })
+    res.render("listings/edit.ejs",{ listing })
+})
+
+//update Route
+app.put("/listing/:id", async (req,res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndUpdate(id, { ...req.body.listing});
+    res.redirect("/listings")
 })
 
 // app.get("/testListing", async (req,res) => {
