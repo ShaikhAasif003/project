@@ -4,12 +4,15 @@ const mongoose = require("mongoose")
 const Listing = require("./models/listing.js") 
 const path = require("path")
 const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate")
 
 
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 app.use(express.urlencoded({extended:true}))
 app.use(methodOverride("_method"));
+app.engine('ejs', ejsMate);
+app.use(express.static(path.join(__dirname, "/public")))
 
 main().then(() => {
     console.log("connected to DB")
@@ -60,7 +63,15 @@ app.get("/listing/:id/edit", async (req,res) => {
 app.put("/listing/:id", async (req,res) => {
     let { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing});
-    res.redirect("/listings")
+    res.redirect(`/listing/${id}`)
+})
+
+//Delete Route
+app.delete("/listing/:id", async (req,res) => {
+    let { id } = req.params;
+  let delitedListing =  await Listing.findByIdAndDelete(id);
+  console.log(delitedListing)
+  res.redirect("/listing")
 })
 
 // app.get("/testListing", async (req,res) => {
